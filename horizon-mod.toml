@@ -1,6 +1,6 @@
 id = "mlg"
 name = "MLG"
-version = "0.2.0"
+version = "0.2.1"
 description = "Auto-MLG: places your water bucket under you in the last stretch of a fall and picks it back up once you have landed, so no fall damage registers."
 authors = ["hakergeniusz"]
 license = "MIT"

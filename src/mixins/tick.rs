@@ -7,16 +7,16 @@
 // Any screen over the world stops the machine: a use from behind a dialog is
 // a click on the dialog, and a fall is nobody's concern while it stands.
 //
-// The use is the game's own click pipeline with a forced target
-// (`forced_hit`): on a world this client only watches, the player's own
-// remote-use press (the packet carries the hit and the server acts with the
-// slot it knows); on a hosted world, the item's own use with the guest's
-// item shape — a guest's use names one hand and touches no entity, so an
-// entity under the crosshair cannot take the click.
+// The use is the game's own click pipeline: on a world this client only
+// watches, the player's own remote-use press at the forced target (the
+// packet carries the hit and the server acts with the slot it knows); on a
+// hosted world, the game's own fallthrough click at the hit — the full block
+// phase (the water places) and then the item's own use, with the guest shape
+// the fallthrough sets itself.
 // Copyright (c) 2026 hakergeniusz. MIT.
 fn mlg_tick(game: &mut crate::game::Game<'_>) {
     // One block use at `hit` with the main hand, through the game's own
-    // click pipeline at the forced target. Whether the click took, where the
+    // click pipeline at that target. Whether the click took, where the
     // pipeline answers at all.
     fn use_on(game: &mut crate::game::Game<'_>, hit: crate::game::Hit) -> bool {
         let saved_hit = game.forced_hit;
@@ -26,12 +26,13 @@ fn mlg_tick(game: &mut crate::game::Game<'_>) {
             game.remote_use(mod_api::InteractionAttempt::Press);
             took = true;
         } else {
-            game.forced_hit = Some(hit);
-            let saved_guest = game.guest_use;
-            game.guest_use =
-                Some(crate::game::GuestUse::Item(horizon_client::first_person::Hand::Main));
-            took = game.use_hand(None).unwrap_or(false);
-            game.guest_use = saved_guest;
+            // The game's own "target, then item" click: the block phase runs
+            // with the hit in hand (a water bucket pours there), and a pass
+            // falls on to the item itself — the pickup's empty bucket fills
+            // from the water the hit names. The guest shape is the
+            // fallthrough's own; no forced target is needed, the hit is the
+            // argument.
+            took = game.use_target_then_item(&hit).unwrap_or(false);
         }
         game.forced_hit = saved_hit;
         took

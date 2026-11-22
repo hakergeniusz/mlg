@@ -1,6 +1,6 @@
 [package]
 name = "mlg"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 license = "MIT"
 description = "Auto-MLG: a water bucket placed under you in the last stretch of a fall, picked back up after the landing. A Horizon native mod."

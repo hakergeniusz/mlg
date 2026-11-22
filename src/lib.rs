@@ -6,11 +6,12 @@
 //! touch of water, and a water bucket poured into the block above the floor
 //! resets it where the game's own rules run — the server's sim, on a world
 //! that has no mods at all. The bucket is a real use of a real item: the
-//! click is the game's own pipeline with a forced target (`forced_hit`), so
-//! on a world this client only watches it goes out as the player's own
-//! remote-use press, and on a hosted world it runs the host's use pipeline —
-//! the server sees a legal placement inside its reach check, not a spoofed
-//! number, so the save holds on any server this mod is installed on.
+//! click is the game's own pipeline at a target the mod chooses — on a world
+//! this client only watches, the player's own remote-use press at a forced
+//! target; on a hosted world, the game's own target-then-item fallthrough
+//! click at the same hit — the server sees a legal placement inside its
+//! reach check, not a spoofed number, so the save holds on any server this
+//! mod is installed on.
 //!
 //! The save is latency-bound: the water must exist before the feet arrive,
 //! and a use only leads the fall by so far (about six blocks below the feet
